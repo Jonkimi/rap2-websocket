@@ -33,9 +33,9 @@
 
     进入 mock.py 的 websocketd 的开发管理界面，使用命令 `mock`命令生成指定仓库的测试接口
 
-```shell
-    mock -i 17 -c 'koa.sid=7QC71YKGHTaOZUbeMHirZjicr0MN8-fX; koa.sid.sig=h0Q0zcHLVyJ_qQVxfwD_9pvXSLE'
-```
+    ```shell
+        mock -i 17 -c 'koa.sid=7QC71YKGHTaOZUbeMHirZjicr0MN8-fX; koa.sid.sig=h0Q0zcHLVyJ_qQVxfwD_9pvXSLE'
+    ```
 
 ## 问题
 
