@@ -1,0 +1,22 @@
+#!/bin/bash
+basename=$(basename "$0")
+basedir=$(dirname $(readlink -f "$0"))
+path=${basedir##'/root/ws'}
+time=10
+#echo "连接到 $path/$basename"
+
+# 读数据
+#while read MSG; do
+#    echo "[$(date)]  ${MSG}";
+#done;
+if [[ ! -f $basename.log ]] ;then
+    echo '$$ connect' >> $basename.log
+fi
+# 实现广播消息
+#tail -n 0 -f $basename.log --pid=$$ &
+# 间隔发送消息
+while true;do
+    #echo $(< $basename.json) >> $basename.log
+    echo $(< $basedir/$basename.json)
+    sleep $time
+done;
