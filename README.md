@@ -25,8 +25,7 @@
 3. 命令启动服务
 
     ```bash
-    #! /bin/bash
-    websocketd --port=9900 --dir=~/ws --devconsole 1>log 2>&1 &
+    websocketd --port=9900 --dir=~/ws --devconsole 1>mock.log 2>&1 &
     ```
 
 4. 使用mock.py
@@ -41,10 +40,19 @@
 
 1. -bash: /root/ws/mock.py: /usr/bin/python2^M: bad interpreter: No such file or directory
 
-    dos2unix mock.py 编码转换
+    脚本编码转换
+
+    ```shell
+    dos2unix mock.py
+    ```
 
 2. SSL 支持
 
-    使用 `Nginx` 反向代理[^1]
+    使用 websocketd 启动参数[^1]
+    ```ini
+    --ssl               Listen for HTTPS socket instead of HTTP.
+    --sslcert=FILE      All three options must be used or all of
+    --sslkey=FILE       them should be omitted.
+    ```
 
-[^1]: https://github.com/joewalnes/websocketd/issues/17
+[^1]: https://github.com/joewalnes/websocketd/issues/316
