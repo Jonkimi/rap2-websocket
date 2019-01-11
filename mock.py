@@ -117,13 +117,8 @@ def handle():
                     mock_repo(args.repo_id, args.cookie)
 
 
-import sys
-
 if __name__ == '__main__':
 
-    sys.argv
-    # def print_message():
-    #     print("hh")
     APP_DESC = """usage: mock [-h] [-i repo-id] [-c cookie]
 
 optional arguments:
