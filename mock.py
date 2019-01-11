@@ -1,7 +1,12 @@
 #!/usr/bin/python2
 # -*- coding:utf-8 -*-
+
+# Copyright 2019 Jonkimi
+# All rights reserved.
+# license that can be found in the LICENSE file.
+
 from __future__ import print_function
-#from builtins import input
+# from builtins import input
 from sys import stdout
 import json
 import os.path
@@ -10,18 +15,25 @@ import urlparse
 import shutil
 import argparse
 import shlex
+import ConfigParser
 
-cookie = 'koa.sid=7QC71YKGHTaOZUbeMHirZjicr0MN8-fX; koa.sid.sig=h0Q0zcHLVyJ_qQVxfwD_9pvXSLE'
-server = 'https://rap2-delos.example.com'
+# test cookie 'koa.sid=7QC71YKGHTaOZUbeMHirZjicr0MN8-fX; koa.sid.sig=h0Q0zcHLVyJ_qQVxfwD_9pvXSLE'
+server = 'http://127.0.0.1:8088'
 repo_url = '{0}/repository/get?id={1}'
 mock_url_prefix = '{0}/app/mock/{1}/'
+#脚本所在目录
+mock_dir = os.path.split(os.path.realpath(__file__))[0]
+example_script = u'test'
+example_json = u'test.json'
 
-mock_dir = u'/root/ws'
-example_script = u'test/test'
-example_json = u'test/test.json'
 
-
-def send_req(url):
+def send_req(url, cookie):
+    '''
+    向 rap2-delos 发送请求
+    :param url:
+    :param cookie:
+    :return:
+    '''
     print('send request: ', url)
     req = urllib2.Request(url)
     req.add_header('cookie', cookie)
@@ -38,8 +50,8 @@ def send_req(url):
     return response_str
 
 
-def mock_repo(repo_id):
-    repo_str = send_req(repo_url.format(server, repo_id))
+def mock_repo(repo_id, cookie):
+    repo_str = send_req(repo_url.format(server, repo_id),cookie)
     if repo_str is None:
         return
     parsed_json = json.loads(repo_str)
@@ -60,28 +72,19 @@ def mock_repo(repo_id):
             path = os.path.dirname(os.path.join(mock_dir, ws_url))
             print('path:', ws_url)
 
-            # 获取mock数据
-            mock_data = send_req(urlparse.urljoin(mock_url_prefix.format(server, repo_id), ws_url))
-
-            # 打印mock 数据
-            mock_data = mock_data.replace('\r\n', ' ').replace('\n', ' ')
-            print(mock_data)
-            if mock_data is not None:
-                # 创建目录
-                try:
-                    if not os.path.exists(path):
-                        os.makedirs(path)
-                except OSError as err:
-                    print("OSError ({0}): {1}".format(err.errno, err.strerror))
-                else:
-                    # 复制脚本
-                    shutil.copy(os.path.join(mock_dir,example_script), os.path.join(path, name))
-
-                    # 写mock数据
-                    with open(os.path.join(path, name + '.json'), 'w') as mock_json:
-                        mock_json.write(mock_data)
-
-                    print('mock {0} OK '.format(ws_url))
+            # 创建目录
+            try:
+                if not os.path.exists(path):
+                    os.makedirs(path)
+            except OSError as err:
+                print("OSError ({0}): {1}".format(err.errno, err.strerror))
+            else:
+                # 复制脚本
+                shutil.copy(os.path.join(mock_dir, example_script), os.path.join(path, name))
+                # 写入脚本配置
+                with open(os.path.join(path, name + '.conf'), 'w') as mock_url:
+                    mock_url.write(urlparse.urljoin(mock_url_prefix.format(server, repo_id), ws_url))
+                print('mock {0} OK '.format(ws_url))
 
 
 class MyArgumentParser(argparse.ArgumentParser):
@@ -107,10 +110,13 @@ def handle():
             except ValueError as e:
                 print(e.message)
             else:
-                print(args)
-                if args.cookie is not None:
-                    cookie = args.cookie
-                mock_repo(args.repo_id)
+                #print(args)
+                if args.cookie is None or args.repo_id is None:
+                    print(APP_DESC)
+                else:
+                    mock_repo(args.repo_id, args.cookie)
+
+
 import sys
 
 if __name__ == '__main__':
@@ -131,16 +137,13 @@ optional arguments:
     parser.add_argument('-c', '--cookie', type=str, help="")
 
     # 读取服务器配置
-    confi_path = os.path.join(os.path.split(os.path.realpath(__file__))[0], "config.json")
+    config_path = os.path.join(mock_dir, "mock.conf")
 
-    if not os.path.exists(confi_path):
-        print("config file not exists.")
+    if not os.path.exists(config_path):
+        print("config file mock.conf not exists.")
     else:
-        with open(confi_path, 'r') as f:
-            content = f.read()
-            print("config: \n", content)
-            config = json.loads(content)
-            server = config['server']
-            mock_dir = config['dir']
-            print(APP_DESC)
-            handle()
+        cf = ConfigParser.ConfigParser()
+        cf.read(config_path)
+        server = cf.get('main', 'server')
+        print(APP_DESC)
+        handle()

@@ -2,6 +2,7 @@
 basename=$(basename "$0")
 basedir=$(dirname $(readlink -f "$0"))
 path=${basedir##'/root/ws'}
+url=$(cat $basedir/$basename.conf)
 time=10
 #echo "连接到 $path/$basename"
 
@@ -17,6 +18,7 @@ fi
 # 间隔发送消息
 while true;do
     #echo $(< $basename.json) >> $basename.log
-    echo $(< $basedir/$basename.json)
+    #echo $(< $basedir/$basename.json)
+    curl -s $url | xargs echo
     sleep $time
 done;

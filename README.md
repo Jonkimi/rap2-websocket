@@ -11,16 +11,15 @@
 
 1. 安装 `websocktd`
 
-2. 创建 websocktd 工作目录 `~/ws`，复制 `rap2-websocket` 下的所有文件到此目录，修改配置文件 `config.json`
+2. 创建 websocktd 工作目录 `~/ws`，复制 `rap2-websocket` 下的所有文件到此目录，修改配置文件 `mock.conf`
 
-    ```json
-    {
-        "server":"http://127.0.0.1:8088",
-        "dir":"~/ws",
-    }
+    ```ini
+    [main]
+    server=http://127.0.0.1:8088
     ```
 
     `server` 为 `rap2-delos` 部署地址
+    `dir` 为工具目录
 
 3. 命令启动服务
 
