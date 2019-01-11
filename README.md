@@ -26,7 +26,12 @@
     websocketd --port=9900 --dir=~/ws --devconsole 1>mock.log 2>&1 &
     ```
 
-4. 使用mock.py
+4. 创建 websocket 接口
+
+    在 RAP2 创建 websocket 接口，要求 **websocket 接口必须命名 以 ws 开头，请求类型必须是 Get ，请求参数必须为非必选**。
+
+
+5. 使用mock.py
 
     进入 mock.py 的 websocketd 的开发管理界面，使用命令 `mock`命令生成指定仓库的测试接口
 
