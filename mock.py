@@ -18,10 +18,10 @@ import shlex
 import ConfigParser
 
 # test cookie 'koa.sid=7QC71YKGHTaOZUbeMHirZjicr0MN8-fX; koa.sid.sig=h0Q0zcHLVyJ_qQVxfwD_9pvXSLE'
-server = 'http://127.0.0.1:8088'
+server = 'https://127.0.0.1:8088'
 repo_url = '{0}/repository/get?id={1}'
 mock_url_prefix = '{0}/app/mock/{1}/'
-#脚本所在目录
+# 脚本所在目录
 mock_dir = os.path.split(os.path.realpath(__file__))[0]
 example_script = u'test'
 example_json = u'test.json'
@@ -51,7 +51,7 @@ def send_req(url, cookie):
 
 
 def mock_repo(repo_id, cookie):
-    repo_str = send_req(repo_url.format(server, repo_id),cookie)
+    repo_str = send_req(repo_url.format(server, repo_id), cookie)
     if repo_str is None:
         return
     parsed_json = json.loads(repo_str)
@@ -87,17 +87,6 @@ def mock_repo(repo_id, cookie):
                 print('mock {0} OK '.format(ws_url))
 
 
-class MyArgumentParser(argparse.ArgumentParser):
-    # =====================================
-    # Command line argument parsing methods
-    # =====================================
-    def parse_args(self, args=None, namespace=None):
-        args, argv = self.parse_known_args(args, namespace)
-        if argv:
-            raise ValueError('unrecognized arguments: %s' % ''.join(argv))
-        return args
-
-
 def handle():
     while True:
         stdout.flush()
@@ -107,10 +96,11 @@ def handle():
         else:
             try:
                 args = parser.parse_args(shlex.split(command[5:]))
-            except ValueError as e:
-                print(e.message)
+            except SystemExit :
+                # 将命令行解析失败或打印帮助信息后的退出 忽略
+                pass
             else:
-                #print(args)
+                # print(args)
                 if args.cookie is None or args.repo_id is None:
                     print(APP_DESC)
                 else:
@@ -127,7 +117,7 @@ optional arguments:
   -c, --cookie     set auth cookie
 """
 
-    parser = MyArgumentParser()
+    parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--repo-id', type=int, help="")
     parser.add_argument('-c', '--cookie', type=str, help="")
 
