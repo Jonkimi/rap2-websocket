@@ -19,6 +19,6 @@ fi
 while true;do
     #echo $(< $basename.json) >> $basename.log
     #echo $(< $basedir/$basename.json)
-    curl -s $url | xargs echo
+    curl -s $url | xargs -d '\n'
     sleep $time
 done;
