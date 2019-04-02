@@ -1,3 +1,6 @@
+[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # rap2-websocket
 
 扩展开源接口管理工具 [RAP2](https://github.com/thx/rap2-delos) 支持 websocket 接口 mock，本工具会为 RAP2 中命名以 `ws` 开头的接口生成测试接口。
